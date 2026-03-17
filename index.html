@@ -633,7 +633,7 @@
           b.textContent = '조회 중...';
           try {
             const res = await fetch(
-              API_BASE + '/franchise?' + new URLSearchParams({ name, phone })
+              API_BASE + '/franchise-check?' + new URLSearchParams({ name, phone })
             );
             const data = await res.json().catch(() => ({}));
             if (res.ok && data.success && data.result) {
