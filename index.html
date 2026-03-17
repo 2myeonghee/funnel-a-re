@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>차액가맹금 신청</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@ body{
 }
 
 /* 진행 바 */
-.progress-wrap{padding:16px 20px 0;position:relative;}
+.progress-wrap{padding:calc(env(safe-area-inset-top, 16px) + 16px) 20px 0;position:relative;}
 .progress-track{height:4px;background:#E8E8E8;border-radius:4px;position:relative;}
 .progress-fill{height:100%;background:var(--blue);border-radius:4px;transition:width 0.4s ease;}
 .step-badge{
