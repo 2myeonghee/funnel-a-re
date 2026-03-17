@@ -413,10 +413,10 @@
               계약서를 첨부하시면 무료로<br />법적 검토 후 연락드립니다.
             </p>
             <div class="slide-bottom">
-              <input type="file" id="pdfFileInput" accept="application/pdf,.pdf" />
+              <input type="file" id="fileInput" accept="image/*,.pdf" />
               <button
                 class="file-btn"
-                onclick="document.getElementById('pdfFileInput').click()"
+                onclick="document.getElementById('fileInput').click()"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path
@@ -426,9 +426,9 @@
                     stroke-linecap="round"
                   />
                 </svg>
-                가맹계약서 PDF 첨부
+                파일 첨부하기
               </button>
-              <div class="file-done" id="pdfFileDone">
+              <div class="file-done" id="fileDone">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" fill="#22C55E" />
                   <path
@@ -438,48 +438,14 @@
                     stroke-linecap="round"
                   />
                 </svg>
-                <span id="pdfFileNameEl">PDF 첨부됨</span>
+                <span id="fileNameEl">파일 첨부됨</span>
               </div>
-              <input
-                type="file"
-                id="imageFileInput"
-                accept="image/*"
-                capture="environment"
-              />
-              <button
-                class="file-btn"
-                onclick="document.getElementById('imageFileInput').click()"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 5v14M5 12h14"
-                    stroke="white"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                이미지 첨부 (선택)
-              </button>
-              <div class="file-done" id="imageFileDone">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" fill="#22C55E" />
-                  <path
-                    d="M7 12.5l3.5 3.5 6-7"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                <span id="imageFileNameEl">이미지 첨부됨</span>
-              </div>
-              <div id="step2Err" class="step-err" style="display: none"></div>
+              <p class="file-hint">이미지 또는 PDF 파일 1개 업로드 가능</p>
               <div class="btn-row">
                 <button class="back-btn" onclick="back()" aria-label="이전">
                   &#8592;
                 </button>
-                <button class="next-btn" id="nxtBtn2" onclick="go(2)">
-                  완료
-                </button>
+                <button class="next-btn" id="nxtBtn2" onclick="go(2)">완료</button>
               </div>
               <p class="legal">
                 실제 반환 가능 여부와 금액은 가맹계약서 검토 및<br />개별 법적
@@ -546,80 +512,20 @@
         }
       })();
 
-      function updateFileLabel(inputId, labelId, doneId) {
-        const input = document.getElementById(inputId);
-        const label = document.getElementById(labelId);
-        const done = document.getElementById(doneId);
-        const f = input.files[0];
+      document.getElementById('fileInput').addEventListener('change', function () {
+        const f = this.files && this.files[0] ? this.files[0] : null;
+        const nameEl = document.getElementById('fileNameEl');
+        const doneEl = document.getElementById('fileDone');
         if (f) {
-          label.textContent =
-            f.name.length > 24 ? f.name.slice(0, 22) + '…' : f.name;
-          done.classList.add('show');
+          nameEl.textContent = f.name.length > 24 ? f.name.slice(0, 22) + '…' : f.name;
+          doneEl.classList.add('show');
+          document.querySelector('.file-btn').innerHTML =
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>다른 파일 첨부';
         } else {
-          done.classList.remove('show');
+          doneEl.classList.remove('show');
         }
         chk2();
-      }
-
-      function isPdfFile(file) {
-        if (!file) return false;
-        if (file.type === 'application/pdf') return true;
-        return /\.pdf$/i.test(file.name || '');
-      }
-
-      function isImageFile(file) {
-        if (!file) return false;
-        if (typeof file.type === 'string' && file.type.startsWith('image/'))
-          return true;
-        return /\.(png|jpe?g|gif|webp|bmp|heic|heif)$/i.test(file.name || '');
-      }
-
-      function clearInput(inputId, labelId, doneId) {
-        const input = document.getElementById(inputId);
-        if (input) input.value = '';
-        updateFileLabel(inputId, labelId, doneId);
-      }
-
-      document
-        .getElementById('pdfFileInput')
-        .addEventListener('change', function () {
-          const errEl = document.getElementById('step2Err');
-          errEl.style.display = 'none';
-          errEl.textContent = '';
-
-          const f = this.files && this.files[0] ? this.files[0] : null;
-          if (f && !isPdfFile(f)) {
-            this.value = '';
-            updateFileLabel('pdfFileInput', 'pdfFileNameEl', 'pdfFileDone');
-            errEl.textContent = 'PDF 파일만 업로드할 수 있습니다.';
-            errEl.style.display = 'block';
-            return;
-          }
-
-          // PDF를 선택하면 이미지 선택은 해제 (단일 파일만 허용)
-          if (f) clearInput('imageFileInput', 'imageFileNameEl', 'imageFileDone');
-          updateFileLabel('pdfFileInput', 'pdfFileNameEl', 'pdfFileDone');
-        });
-      document
-        .getElementById('imageFileInput')
-        .addEventListener('change', function () {
-          const errEl = document.getElementById('step2Err');
-          errEl.style.display = 'none';
-          errEl.textContent = '';
-
-          const f = this.files && this.files[0] ? this.files[0] : null;
-          if (f && !isImageFile(f)) {
-            this.value = '';
-            updateFileLabel('imageFileInput', 'imageFileNameEl', 'imageFileDone');
-            errEl.textContent = '이미지 파일만 업로드할 수 있습니다.';
-            errEl.style.display = 'block';
-            return;
-          }
-
-          // 이미지를 선택하면 PDF 선택은 해제 (단일 파일만 허용)
-          if (f) clearInput('pdfFileInput', 'pdfFileNameEl', 'pdfFileDone');
-          updateFileLabel('imageFileInput', 'imageFileNameEl', 'imageFileDone');
-        });
+      });
 
       /* STEP 1: 이름 2자 이상 AND 전화번호 11자리 모두 충족 시 활성화 */
       function chk1() {
@@ -632,13 +538,10 @@
         nameOk && phoneOk ? b.classList.add('on') : b.classList.remove('on');
       }
 
-      /* STEP 2: PDF 또는 이미지 중 "하나만" 선택 시 활성화 */
+      /* STEP 2: 파일 선택 시 활성화 */
       function chk2() {
         const b = document.getElementById('nxtBtn2');
-        const hasPdf = document.getElementById('pdfFileInput').files.length > 0;
-        const hasImage =
-          document.getElementById('imageFileInput').files.length > 0;
-        fileDone = (hasPdf && !hasImage) || (!hasPdf && hasImage);
+        fileDone = document.getElementById('fileInput').files.length > 0;
         fileDone ? b.classList.add('on') : b.classList.remove('on');
       }
 
@@ -735,34 +638,11 @@
           return;
         }
 
-        const pdfInput = document.getElementById('pdfFileInput');
-        const imageInput = document.getElementById('imageFileInput');
-        const pdfFile = pdfInput.files[0];
-        const imageFile = imageInput.files[0];
+        const file = document.getElementById('fileInput').files[0];
 
-        if (!pdfFile && !imageFile) {
+        if (!file) {
           const errEl = document.getElementById('step2Err');
-          errEl.textContent = 'PDF 또는 이미지 파일을 하나 선택해 주세요.';
-          errEl.style.display = 'block';
-          return;
-        }
-
-        if (pdfFile && imageFile) {
-          const errEl = document.getElementById('step2Err');
-          errEl.textContent = '파일은 PDF 또는 이미지 중 하나만 업로드할 수 있습니다.';
-          errEl.style.display = 'block';
-          return;
-        }
-
-        if (pdfFile && !isPdfFile(pdfFile)) {
-          const errEl = document.getElementById('step2Err');
-          errEl.textContent = 'PDF 파일만 업로드할 수 있습니다.';
-          errEl.style.display = 'block';
-          return;
-        }
-        if (imageFile && !isImageFile(imageFile)) {
-          const errEl = document.getElementById('step2Err');
-          errEl.textContent = '이미지 파일만 업로드할 수 있습니다.';
+          errEl.textContent = '파일을 선택해 주세요.';
           errEl.style.display = 'block';
           return;
         }
@@ -773,9 +653,9 @@
             : 'franchise';
         const url = API_BASE + '/' + path + '/' + franchiseResult.id;
 
+        const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
         const formData = new FormData();
-        if (pdfFile) formData.append('pdfFile', pdfFile);
-        if (imageFile) formData.append('imageFile', imageFile);
+        formData.append(isPdf ? 'pdfFile' : 'imageFile', file);
 
         const b = document.getElementById('nxtBtn2');
         const errEl = document.getElementById('step2Err');
