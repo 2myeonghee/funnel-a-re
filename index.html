@@ -717,7 +717,7 @@
 
         try {
           const res = await fetch(url, {
-            method: 'PATCH',
+            method: 'PUT',
             body: formData,
           });
           const data = await res.json().catch(() => ({}));
