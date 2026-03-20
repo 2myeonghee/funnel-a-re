@@ -795,12 +795,17 @@
                 additionalData.result
               ) {
                 franchiseResult = additionalData.result;
+                step = 2;
+                document.getElementById('sTrack').style.transform =
+                  'translateX(-100%)';
+                document.getElementById('pFill').style.width = '100%';
+                document.getElementById('sBadge').textContent = '2 / 2';
+              } else {
+                errEl.textContent =
+                  additionalData.message ||
+                  '차액가맹금 접수 내역을 찾을 수 없습니다.';
+                errEl.style.display = 'block';
               }
-              step = 2;
-              document.getElementById('sTrack').style.transform =
-                'translateX(-100%)';
-              document.getElementById('pFill').style.width = '100%';
-              document.getElementById('sBadge').textContent = '2 / 2';
             } else {
               errEl.textContent =
                 data.message || '차액가맹금 접수 내역을 찾을 수 없습니다.';
